@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chatbot Simples</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f4f4f4;
+        }
+        .chat-container {
+            width: 300px;
+            background: white;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+        }
+        .messages {
+            height: 200px;
+            overflow-y: auto;
+            border-bottom: 1px solid #ddd;
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+        }
+        .message {
+            padding: 5px;
+            border-radius: 5px;
+            margin: 5px 0;
+        }
+        .user {
+            background: #007bff;
+            color: white;
+            text-align: right;
+        }
+        .bot {
+            background: #ddd;
+            text-align: left;
+        }
+        .typing {
+            font-style: italic;
+            color: #666;
+        }
+        @keyframes dots {
+            0% { content: " ."; }
+            33% { content: " .."; }
+            66% { content: " ..."; }
+            100% { content: " ."; }
+        }
+        input, button {
+            width: calc(100% - 22px);
+            padding: 10px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            background: #007bff;
+            color: white;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="chat-container">
+        <div class="messages" id="chat"></div>
+        <input type="text" id="userInput" placeholder="Digite uma mensagem...">
+        <button onclick="sendMessage()">Enviar</button>
+    </div>
+    
+    <script>
+        function sendMessage() {
+            let input = document.getElementById("userInput");
+            let message = input.value.trim();
+            if (message === "") return;
+            
+            appendMessage("Você", message, "user");
+            input.value = "";
+            
+            let chat = document.getElementById("chat");
+            let typingIndicator = document.createElement("div");
+            typingIndicator.className = "message bot typing";
+            typingIndicator.textContent = "Digitando...";
+            chat.appendChild(typingIndicator);
+            chat.scrollTop = chat.scrollHeight;
+            
+            setTimeout(() => {
+                chat.removeChild(typingIndicator);
+                let response = getBotResponse(message);
+                appendMessage("Bot", response, "bot");
+            }, 1500);
+        }
+
+        function appendMessage(sender, message, className) {
+            let chat = document.getElementById("chat");
+            let msgElement = document.createElement("div");
+            msgElement.className = "message " + className;
+            msgElement.textContent = `${sender}: ${message}`;
+            chat.appendChild(msgElement);
+            chat.scrollTop = chat.scrollHeight;
+        }
+        
+        // A função getBotResponse simula respostas do bot
+        // Pode adicionar mais respostas conforme necessário
+        function getBotResponse(input) {
+            let responses = {
+                "oi": "Oi! Como posso te ajudar?",
+                "bom dia": "Bom dia! Como está seu dia?",
+                "boa tarde": "Boa tarde! Como posso ajudar?",
+                "boa noite": "Boa noite! Precisa de algo?",
+                "como vai?": "Estou bem, e você?",
+                "como vai": "Estou bem, e você?",
+                "tudo bem?": "Tudo ótimo! E com você?",
+                "qual seu nome?": "Sou um chatbot simples!",
+                "o que você faz?": "Sou um assistente virtual e estou aqui para te ajudar com suas dúvidas!",
+                "o que voce faz": "Sou um assistente virtual e estou aqui para te ajudar com suas dúvidas!",
+                "obrigado": "De nada!",
+                "valeu": "De nada! Qualquer coisa, estou aqui.",
+                "até mais": "Até mais! Tenha um ótimo dia!",
+                "ate mais": "Até mais! Tenha um ótimo dia!",
+                "tchau": "Tchau! Volte quando quiser!"
+            };
+            
+            let lowerInput = input.toLowerCase();
+            return responses[lowerInput] || "Não entendi, poderia reformular?";
+        }
+
+        document.getElementById("userInput").addEventListener("keypress", function(event) {
+            if (event.key === "Enter") {
+                sendMessage();
+            }
+        });
+    </script>
+</body>
+</html>
